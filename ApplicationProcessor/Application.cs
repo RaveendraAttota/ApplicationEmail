@@ -31,6 +31,10 @@ namespace ULaw.ApplicationProcessor
             }
         }
 
+        public DegreeGradeEnum DegreeGrade { get; set; }
+        public DegreeSubjectEnum DegreeSubject { get; set; }
+
+        //corrected naming convention of parameters
         public Application(string faculty, string courseCode, DateTime startdate, string title, string firstName, string lastName, DateTime dateOfBirth, bool requiresVisa)
         {
             _applicationModel = new ApplicationModel
@@ -46,9 +50,6 @@ namespace ULaw.ApplicationProcessor
                 DateOfBirth = dateOfBirth
             };
         }
-
-        public DegreeGradeEnum DegreeGrade { get; set; }
-        public DegreeSubjectEnum DegreeSubject { get; set; }
         
         public string Process()
         {
@@ -68,7 +69,8 @@ namespace ULaw.ApplicationProcessor
             if (DegreeSubject == DegreeSubjectEnum.law || DegreeSubject == DegreeSubjectEnum.lawAndBusiness)
             {
                 ApplicationEmail = new ApplicationSuccess();
-                return _applicationEmail.GetEmailText(_applicationModel.FirstName, _applicationModel.CourseCode, _applicationModel.StartDate, DegreeSubject.ToDescription(), DegreeGrade.ToDescription(), 350.00M);
+                decimal? depositAmount = 350.00M; //This can go into config so that when the amount is changed, this class does not need to be modified
+                return _applicationEmail.GetEmailText(_applicationModel.FirstName, _applicationModel.CourseCode, _applicationModel.StartDate, DegreeSubject.ToDescription(), DegreeGrade.ToDescription(), depositAmount);
             }
 
             ApplicationEmail = new ApplicationInProcess();
